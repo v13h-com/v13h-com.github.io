@@ -1,0 +1,100 @@
+/* /static/css/main.css */
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0; /* Light grey background */
+    overflow: hidden; /* Prevent scrollbars during animation */
+}
+
+.container {
+    text-align: center;
+    position: relative; /* For absolute positioning of animation elements */
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 0.5em;
+    color: #333;
+}
+
+h3 {
+    font-size: 1.5em;
+    color: #555;
+    margin-bottom: 2em;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between icons */
+}
+
+.social-links a {
+    color: #333;
+    font-size: 1.5em;
+    transition: color 0.3s ease; /* Smooth color transition on hover */
+    text-decoration: none; /* Remove underlines from links */
+}
+
+.social-links a:hover {
+    color: #007bff; /* Example hover color */
+}
+
+/* Animation-related styles (optional, but good for visual feedback) */
+#ai-text {
+    display: inline-block; /* Allows for transformations */
+    animation: pulse 2s infinite alternate; /* Example animation */
+}
+
+
+@keyframes pulse {
+    from {
+        transform: scale(1);
+        color: #aff1a1;
+    }
+    to {
+        transform: scale(1.1);
+        color: #34a347; /* Example color change */
+    }
+}
+
+.transform-element {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #3498db;
+    border-radius: 50%;
+    opacity: 0; /* Initially hidden */
+    animation: transformAnimation 5s infinite;
+}
+
+@keyframes transformAnimation {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0);
+    }
+    25% {
+        opacity: 0.8;
+        transform: translate(calc(100vw * (random() - 0.5)), calc(100vh * (random() - 0.5))) scale(1); /*Move random*/
+    }
+    50% {
+        opacity: 1;
+        transform: translate(calc(100vw * (random() - 0.5)), calc(100vh * (random() - 0.5))) scale(0.5);  /*Move random*/
+        background-color: #40db32; /*Change color*/
+
+    }
+    75%{
+        opacity: 0.8;
+        transform: translate(calc(100vw * (random() - 0.5)), calc(100vh * (random() - 0.5))) scale(1); /*Move random*/
+    }
+    100% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0);
+    }
+}
