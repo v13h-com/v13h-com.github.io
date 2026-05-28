@@ -1,24 +1,2103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to v13h</title>
-    <link rel="stylesheet" href="/static/css/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tài liệu Nội bộ: Định giá Trái phiếu (Bond Valuation)</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- MathJax Configuration & Loader -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* Reset & Base variables */
+    :root {
+      --primary: #144f92;
+      --primary-dark: #0a2540;
+      --accent-gold: #c5a059;
+      --accent-mint: #2ebb71;
+      --neutral-bg: #f8f9fc;
+      --neutral-dark: #1e293b;
+      --neutral-light: #ffffff;
+      --border-color: rgba(226, 232, 240, 0.8);
+      --font-body: 'Inter', sans-serif;
+      --font-heading: 'Montserrat', sans-serif;
+      --transition-speed: 0.3s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: #0b0f19;
+      color: var(--neutral-dark);
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Fixed 16:9 Canvas container */
+    #slides-wrapper {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    #slides-container {
+      position: absolute;
+      width: 1280px;
+      height: 720px;
+      background-color: var(--neutral-bg);
+      border-radius: 12px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      transform-origin: center center;
+      transition: transform 0.1s ease-out;
+    }
+
+    /* Slide element and states */
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+      transform: translateX(30px);
+      display: flex;
+      flex-direction: column;
+      padding: 40px 60px;
+      background-color: var(--neutral-bg);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .slide.prev {
+      transform: translateX(-30px);
+    }
+
+    /* Slide Themes */
+    .slide.dark-theme {
+      background: linear-gradient(135deg, #09172a 0%, #0d2545 100%);
+      color: var(--neutral-light);
+    }
+
+    .slide.divider-theme {
+      background: linear-gradient(135deg, #0d2545 0%, #144f92 100%);
+      color: var(--neutral-light);
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 80px;
+    }
+
+    .slide.image-only-theme {
+      padding: 0 !important;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Typography inside slides */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      border-bottom: 1.5px solid var(--border-color);
+      padding-bottom: 15px;
+    }
+
+    .slide.dark-theme .slide-header {
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .slide-section-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .slide.dark-theme .slide-section-title {
+      color: var(--accent-gold);
+    }
+
+    .slide-title {
+      font-size: 2.2rem;
+      color: var(--primary-dark);
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .slide.dark-theme .slide-title {
+      color: var(--neutral-light);
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 20px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #334155;
+    }
+
+    .slide.dark-theme .slide-body {
+      color: #cbd5e1;
+    }
+
+    /* Grid Layout Utilities */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: stretch;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    .flex-col-center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Premium UI Cards */
+    .card {
+      background: var(--neutral-light);
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
+    }
+
+    .slide.dark-theme .card {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+      color: var(--neutral-light);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      color: var(--primary);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slide.dark-theme .card-title {
+      color: var(--accent-gold);
+    }
+
+    .card-accent-gold {
+      border-left: 5px solid var(--accent-gold);
+    }
+
+    .card-accent-blue {
+      border-left: 5px solid var(--primary);
+    }
+
+    .card-accent-mint {
+      border-left: 5px solid var(--accent-mint);
+    }
+
+    /* Highlight box / Callout */
+    .callout {
+      background: rgba(197, 160, 89, 0.08);
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      border-radius: 8px;
+      padding: 16px 20px;
+      color: #451a03;
+      font-size: 0.95rem;
+      position: relative;
+    }
+
+    .slide.dark-theme .callout {
+      background: rgba(197, 160, 89, 0.1);
+      color: #fef08a;
+    }
+
+    .callout-mint {
+      background: rgba(46, 187, 113, 0.08);
+      border: 1px solid rgba(46, 187, 113, 0.3);
+      color: #064e3b;
+    }
+
+    /* Equations formatting wrapper */
+    .equation-box {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      font-size: 1.15rem;
+      border: 1px solid #cbd5e1;
+      margin: 8px 0;
+    }
+
+    .slide.dark-theme .equation-box {
+      background: #0f172a;
+      border-color: #334155;
+    }
+
+    /* Table Design */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 700;
+      color: var(--primary-dark);
+      font-family: var(--font-heading);
+    }
+
+    .slide.dark-theme th {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: var(--neutral-light);
+    }
+
+    .slide.dark-theme td {
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Slide Controls */
+    .slides-controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .btn-control {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--neutral-light);
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-control:hover {
+      background: var(--neutral-light);
+      color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    /* Progress bar */
+    .progress-bar-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: rgba(226, 232, 240, 0.2);
+      z-index: 10;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--accent-gold) 100%);
+      transition: width 0.3s ease;
+    }
+
+    /* Key indicators or items list */
+    ul.sleek-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    ul.sleek-list li {
+      position: relative;
+      padding-left: 24px;
+    }
+
+    ul.sleek-list li::before {
+      content: "•";
+      position: absolute;
+      left: 8px;
+      color: var(--accent-gold);
+      font-size: 1.4rem;
+      line-height: 1;
+      top: -2px;
+    }
+
+    .slide.dark-theme ul.sleek-list li::before {
+      color: var(--accent-gold);
+    }
+
+    /* Image slide styles */
+    .image-slide-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .image-slide-container img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    /* Slide Index Drawer Overlay */
+    #drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    #drawer-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #drawer {
+      width: 400px;
+      height: 100%;
+      background: var(--neutral-light);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.3);
+      padding: 30px;
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #drawer-overlay.active #drawer {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 15px;
+    }
+
+    .drawer-title {
+      font-size: 1.4rem;
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+
+    .btn-close-drawer {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+
+    .slide-index-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .slide-index-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: #f8f9fc;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .slide-index-item:hover {
+      background: #eff6ff;
+      border-color: #3b82f6;
+    }
+
+    .slide-index-item.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .slide-index-number {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      min-width: 24px;
+    }
+
+    .slide-index-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* Elegant specific styles */
+    .text-gold {
+      color: var(--accent-gold) !important;
+    }
+
+    .text-primary {
+      color: var(--primary) !important;
+    }
+
+    .divider-num {
+      font-size: 6rem;
+      font-weight: 900;
+      color: var(--accent-gold);
+      font-family: var(--font-heading);
+      opacity: 0.4;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .divider-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--neutral-light);
+      margin-bottom: 20px;
+    }
+
+    .divider-desc {
+      font-size: 1.2rem;
+      max-width: 600px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Mind Map slide visual details */
+    /* McKinsey-Style Mind Map Framework */
+    .mindmap-framework {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      width: 100%;
+      height: 380px;
+      align-items: stretch;
+    }
+
+    .mm-column {
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .mm-column:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(20, 79, 146, 0.08);
+      border-color: var(--primary);
+    }
+
+    .mm-column.card-accent-blue {
+      border-top: 4px solid var(--primary);
+    }
+
+    .mm-column.card-accent-gold {
+      border-top: 4px solid var(--accent-gold);
+    }
+
+    .mm-column.card-accent-mint {
+      border-top: 4px solid var(--accent-mint);
+    }
+
+    .mm-column.card-accent-dark {
+      border-top: 4px solid var(--primary-dark);
+    }
+
+    .mm-column.card-accent-rose {
+      border-top: 4px solid #ef4444;
+    }
+
+    .mm-col-header {
+      background: var(--neutral-bg);
+      padding: 10px 12px;
+      font-family: var(--font-heading);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--primary-dark);
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .mm-col-body {
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .mm-item {
+      background: var(--neutral-bg);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      line-height: 1.3;
+    }
+
+    .mm-item:hover {
+      background: #eff6ff;
+      border-color: rgba(20, 79, 146, 0.2);
+      color: var(--primary);
+      transform: translateX(4px);
+    }
+
+    .mm-detail-bar {
+      width: 100%;
+      background: rgba(20, 79, 146, 0.04);
+      border: 1px solid var(--border-color);
+      border-left: 5px solid var(--accent-gold);
+      border-radius: 8px;
+      padding: 14px 20px;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 76px;
+      text-align: left;
+    }
+
+    .mm-detail-title {
+      font-family: var(--font-heading);
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .mm-detail-desc {
+      font-size: 0.82rem;
+      color: #475569;
+      line-height: 1.4;
+    }
+
+    /* Have a nice day slide buttons */
+    .pdf-button {
+      margin-top: 30px;
+      background: linear-gradient(135deg, var(--accent-gold) 0%, #b28e46 100%);
+      color: #ffffff;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-family: var(--font-heading);
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pdf-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(197, 160, 89, 0.6);
+      background: linear-gradient(135deg, #d4af37 0%, var(--accent-gold) 100%);
+    }
+
+    /* Timeline style agenda */
+    .agenda-timeline {
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      height: 100%;
+      gap: 15px;
+      padding: 20px 0;
+    }
+
+    .agenda-step {
+      flex: 1;
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .agenda-step:hover {
+      transform: translateY(-8px);
+      border-color: var(--primary);
+    }
+
+    .agenda-step-num {
+      font-size: 2.2rem;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      color: var(--accent-gold);
+      opacity: 0.7;
+    }
+
+    .agenda-step-title {
+      font-size: 1.15rem;
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-family: var(--font-heading);
+    }
+
+    .agenda-step-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    /* Accrued Interest Timeline Graphic */
+    .timeline-graphic {
+      width: 100%;
+      height: 60px;
+      position: relative;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .timeline-line {
+      position: absolute;
+      width: 100%;
+      height: 4px;
+      background: #cbd5e1;
+      z-index: 1;
+    }
+
+    .timeline-fill {
+      position: absolute;
+      width: 45%;
+      height: 4px;
+      background: var(--primary);
+      z-index: 2;
+    }
+
+    .timeline-node {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #cbd5e1;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      z-index: 3;
+    }
+
+    .timeline-node.active {
+      border-color: var(--primary);
+      width: 20px;
+      height: 20px;
+    }
+
+    .timeline-node.gold {
+      border-color: var(--accent-gold);
+    }
+
+    .timeline-label {
+      position: absolute;
+      transform: translate(-50%, 0);
+      top: 35px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+      width: 140px;
+    }
+
+    /* Inverse Relationship graphic */
+    .inverse-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 100%;
+      padding: 30px 0;
+    }
+
+    .inverse-arrow-box {
+      width: 250px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+
+    .arrow-icon {
+      font-size: 3rem;
+      font-weight: 800;
+    }
+
+    .arrow-up {
+      color: #e11d48;
+    }
+
+    .arrow-down {
+      color: var(--accent-mint);
+    }
+
+    /* Code block stylings */
+    pre {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      border: 1px solid #334155;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      background: #e2e8f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--primary-dark);
+    }
+
+    .slide.dark-theme code {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--accent-gold);
+    }
+
+    /* Rating table graphic spacing */
+    .rating-ladder {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .rating-step {
+      display: flex;
+      align-items: center;
+      color: #ffffff;
+      font-weight: 700;
+      border-radius: 4px;
+      overflow: hidden;
+      font-size: 0.8rem;
+    }
+
+    .rating-badge {
+      width: 80px;
+      padding: 6px 12px;
+      text-align: center;
+    }
+
+    .rating-premium {
+      flex: 1;
+      padding: 6px 16px;
+      background: #f1f5f9;
+      color: var(--neutral-dark);
+      text-align: right;
+      font-weight: 500;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1><span id="ai-text">v13h.com</span></h1>
-        <h3>Mindset is the key</h3>
 
-        <div class="social-links">
-            <a href="https://x.com/" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
-            <a href="https://github.com/" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
-            <a href="https://youtube.com/" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
-        </div>
+  <!-- Drawer Index Overlay -->
+  <div id="drawer-overlay" onclick="toggleDrawer()">
+    <div id="drawer" onclick="event.stopPropagation()">
+      <div class="drawer-header">
+        <div class="drawer-title">Danh sách Slide</div>
+        <button class="btn-close-drawer" onclick="toggleDrawer()">×</button>
+      </div>
+      <div class="slide-index-list" id="slide-index-list">
+        <!-- Rendered dynamically by JS -->
+      </div>
     </div>
+  </div>
 
-    <script src="/static/js/main.js"></script>
+  <!-- Slides controls outside container -->
+  <div class="slides-controls">
+    <button class="btn-control" onclick="prevSlide()" title="Trang trước (Mũi tên Trái)">← Trước</button>
+    <button class="btn-control" onclick="toggleDrawer()" title="Danh sách bài giảng">📋 Danh sách</button>
+    <button class="btn-control" onclick="nextSlide()" title="Trang sau (Mũi tên Phải / Phím cách)">Sau →</button>
+  </div>
+
+  <div id="slides-wrapper">
+    <div id="slides-container">
+      
+      <!-- Slide progress bar -->
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="slide-progress"></div>
+      </div>
+
+      <!-- ==================== SLIDE 1 ==================== -->
+      <div class="slide dark-theme flex-col-center" style="text-align: center; justify-content: center; gap: 24px;">
+        <div style="font-family: var(--font-heading); font-size: 1.1rem; letter-spacing: 4px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase;">
+          TÀI LIỆU NỘI BỘ
+        </div>
+        <div style="height: 2px; width: 80px; background-color: var(--accent-gold);"></div>
+        <h1 style="font-size: 3.6rem; font-weight: 800; line-height: 1.1; font-family: var(--font-heading); color: #ffffff;">
+          ĐỊNH GIÁ TRÁI PHIẾU<br>
+          <span style="color: var(--accent-gold); font-size: 2.5rem; font-weight: 500;">BOND VALUATION</span>
+        </h1>
+        <p style="font-size: 1.2rem; opacity: 0.8; font-weight: 300; max-width: 700px; margin-top: 10px;">
+          Đọc hiểu Bản công bố thông tin, bóc tách dòng tiền và tính toán hiệu quả đầu tư thực tế dành cho Bộ phận Đầu tư, Kế toán & Quản lý rủi ro.
+        </p>
+        <div style="font-size: 0.9rem; opacity: 0.5; margin-top: 40px; font-family: var(--font-heading); font-weight: 500;">
+          TVS-TVAM-Finsight &copy; 2026.
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 2 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Tổng quan</div>
+          <div class="slide-counter">02 / 32</div>
+        </div>
+        <h2 class="slide-title" style="margin-bottom: 30px;">CÁC NỘI DUNG CHÍNH</h2>
+        <div class="slide-body">
+          <div class="agenda-timeline">
+            
+            <div class="agenda-step">
+              <div class="agenda-step-num">01</div>
+              <div class="agenda-step-title">Khái niệm Cốt lõi</div>
+              <div class="agenda-step-desc">Đọc vị Bản cáo bạch (Prospectus), bóc tách 4 điều khoản dòng tiền thiết yếu.</div>
+            </div>
+
+            <div class="agenda-step">
+              <div class="agenda-step-num">02</div>
+              <div class="agenda-step-title">Bản chất Định giá</div>
+              <div class="agenda-step-desc">Nguyên lý dòng tiền & cách thiết lập "thước đo" tỷ suất sinh lời đòi hỏi ($r$).</div>
+            </div>
+
+            <div class="agenda-step">
+              <div class="agenda-step-num">03</div>
+              <div class="agenda-step-title">Mô hình Định giá</div>
+              <div class="agenda-step-desc">Thực hành 3 mô hình định giá, Clean vs. Dirty Price, nghiệp vụ lãi cộng dồn.</div>
+            </div>
+
+            <div class="agenda-step">
+              <div class="agenda-step-num">04</div>
+              <div class="agenda-step-title">Đo lường Hiệu quả</div>
+              <div class="agenda-step-desc">Bộ chỉ số lợi suất thực tế: CY, YTM, YTC, và nguyên tắc Yield to Worst ($YTW$).</div>
+            </div>
+
+            <div class="agenda-step">
+              <div class="agenda-step-num">05</div>
+              <div class="agenda-step-title">Thực tế thị trường</div>
+              <div class="agenda-step-desc">Bài học xương máu Bất động sản, nhận biết bẫy lợi suất, mối quan hệ ngược chiều.</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 3 ==================== -->
+      <div class="slide divider-theme">
+        <div class="divider-num">MODULE 01</div>
+        <h2 class="divider-title">CORE BOND TERMS & STRUCTURE</h2>
+        <p class="divider-desc">
+          Bóc tách các thông số tài sản từ Bản công bố thông tin (Prospectus). Phân loại cấu trúc lãi suất và các biện pháp bảo đảm của doanh nghiệp Việt Nam.
+        </p>
+      </div>
+
+      <!-- ==================== SLIDE 4 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 1: Core Bond Terms</div>
+          <div class="slide-counter">04 / 32</div>
+        </div>
+        <h2 class="slide-title">MỆNH GIÁ & LÃI SUẤT DANH NGHĨA</h2>
+        <div class="slide-body grid-2">
+          
+          <div class="card card-accent-blue">
+            <div class="card-title">1. Mệnh giá (Par / Face Value)</div>
+            <p>Là số tiền gốc ghi trên trái phiếu mà tổ chức phát hành (<strong>Issuer</strong>) cam kết sẽ hoàn trả đầy đủ cho nhà đầu tư khi đáo hạn.</p>
+            <div class="callout" style="padding: 10px 15px; font-size: 0.85rem;">
+              <strong>Quy chuẩn Việt Nam (NĐ 155/2020):</strong><br>
+              • Chào bán đại chúng: <strong>100,000 VND</strong><br>
+              • Chào bán riêng lẻ: <strong>100,000,000 VND</strong>
+            </div>
+            <p style="font-size: 0.85rem; color: #64748b; font-style: italic;">Lưu ý: Giá giao dịch thực tế có thể cao hơn (Premium) hoặc thấp hơn (Discount) mệnh giá, nhưng gốc thu về luôn là Par.</p>
+          </div>
+
+          <div class="card card-accent-gold">
+            <div class="card-title">2. Lãi suất danh nghĩa (Coupon Rate)</div>
+            <p>Lãi suất dùng để tính số tiền lãi nhận được định kỳ: $\text{Lãi định kỳ} = F \times \text{Coupon Rate}$.</p>
+            <ul class="sleek-list" style="font-size: 0.9rem;">
+              <li><strong>Cố định (Fixed-rate):</strong> Giữ nguyên suốt kỳ hạn (Phổ biến ở Trái phiếu chính phủ).</li>
+              <li><strong>Thả nổi (Floating-rate):</strong> Thay đổi định kỳ theo công thức:
+                <div style="font-weight: 700; margin: 4px 0; color: var(--primary);">$\text{Coupon} = \text{Lãi tham chiếu} + \text{Biên độ}$</div>
+                Lãi tham chiếu thông thường là trung bình lãi tiết kiệm 12T của 4 ngân hàng Big4.
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 5 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 1: Core Bond Terms</div>
+          <div class="slide-counter">05 / 32</div>
+        </div>
+        <h2 class="slide-title">KỲ HẠN CÒN LẠI & TẦN SUẤT TRẢ LÃI</h2>
+        <div class="slide-body grid-2">
+          
+          <div class="card card-accent-gold">
+            <div class="card-title">3. Kỳ hạn còn lại (Remaining Maturity/Tenor)</div>
+            <p>Khoảng thời gian từ thời điểm hiện tại cho đến ngày đáo hạn thực tế.</p>
+            <div class="callout" style="border-color: rgba(225, 29, 72, 0.4); background: rgba(225, 29, 72, 0.05); color: #881337;">
+              <strong>Bẫy Kỳ hạn (Tenor Trap):</strong><br>
+              Khi định giá trái phiếu giao dịch trên thị trường thứ cấp, <strong>chỉ sử dụng Kỳ hạn còn lại</strong>, không sử dụng Kỳ hạn phát hành gốc (Original Maturity).
+            </div>
+            <p style="font-size: 0.9rem;">Nếu trái phiếu gốc 3 năm đã chạy được 2 năm, chỉ dùng kỳ hạn 1 năm còn lại để chiết khấu dòng tiền.</p>
+          </div>
+
+          <div class="card card-accent-blue">
+            <div class="card-title">4. Tần suất trả lãi (Coupon Frequency)</div>
+            <p>Số lần tổ chức phát hành thực hiện chi trả tiền lãi cho nhà đầu tư trong một năm.</p>
+            <table style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Tần suất</th>
+                  <th>Số kỳ/năm ($m$)</th>
+                  <th>Đặc điểm thực tế tại VN</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Hàng năm (Annual)</td>
+                  <td>1 lần/năm</td>
+                  <td>Trái phiếu Chính phủ (VGB)</td>
+                </tr>
+                <tr>
+                  <td>6 tháng (Semi-annual)</td>
+                  <td>2 lần/năm</td>
+                  <td>Đa số Trái phiếu Doanh nghiệp</td>
+                </tr>
+                <tr>
+                  <td>3 tháng (Quarterly)</td>
+                  <td>4 lần/năm</td>
+                  <td>Rất được ưa chuộng bởi NĐT cá nhân</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 6 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 1: Core Bond Terms</div>
+          <div class="slide-counter">06 / 32</div>
+        </div>
+        <h2 class="slide-title">BIỆN PHÁP BẢO ĐẢM (SECURED VS. UNSECURED)</h2>
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card card-accent-blue">
+              <div class="card-title">Trái phiếu có bảo đảm (Secured Bond)</div>
+              <p style="font-size: 0.9rem;">Được bảo vệ bằng tài sản thế chấp (Bất động sản dự án, máy móc thiết bị, hoặc tài sản của bên thứ ba). Khi xảy ra vỡ nợ, tài sản này được thanh lý để trả nợ trước.</p>
+            </div>
+            <div class="card">
+              <div class="card-title" style="color: #64748b;">Trái phiếu không bảo đảm (Unsecured Bond)</div>
+              <p style="font-size: 0.9rem;">Dựa hoàn toàn trên uy tín tài chính và dòng tiền của tổ chức phát hành. Độ rủi ro cao hơn nhưng lãi suất cam kết thường cao hơn để bù đắp.</p>
+            </div>
+          </div>
+          <div class="callout" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05); color: #7f1d1d; margin-top: 10px;">
+            <strong>⚠️ Cảnh báo bẫy tài sản bảo đảm bằng Cổ phiếu:</strong><br>
+            Tại Việt Nam, nhiều doanh nghiệp lấy cổ phiếu của chính mình làm tài sản thế chấp. Đây là biện pháp <strong>rất rủi ro</strong>. Khi doanh nghiệp mất khả năng thanh toán nợ, giá trị cổ phiếu sẽ lao dốc tự do về gần 0, khiến tài sản bảo đảm hoàn toàn mất giá trị đúng lúc nhà đầu tư cần nó nhất.
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 7 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 1: Core Bond Terms</div>
+          <div class="slide-counter">07 / 32</div>
+        </div>
+        <h2 class="slide-title">VÍ DỤ THỰC TẾ: BÓC TÁCH DÒNG TIỀN</h2>
+        <div class="slide-body grid-2">
+          
+          <div class="card card-accent-blue" style="font-size: 0.9rem;">
+            <div class="card-title">Hồ sơ Cáo bạch Trái phiếu X</div>
+            <ul class="sleek-list">
+              <li><strong>Mệnh giá (Par Value):</strong> 100,000 VND</li>
+              <li><strong>Ngày phát hành:</strong> 01/01/2025 | <strong>Ngày đáo hạn:</strong> 01/01/2028</li>
+              <li><strong>Ngày bạn mua định giá:</strong> 01/01/2026 $\rightarrow$ <strong>Tenor còn lại = 2 năm</strong>.</li>
+              <li><strong>Tần suất trả lãi:</strong> 6 tháng/lần (Semi-annual $\rightarrow m = 2$)</li>
+              <li><strong>Coupon Rate kỳ này:</strong> Thả nổi, bằng trung bình Big4 tiết kiệm 12T ($5.5\%$) + Biên độ ($4.0\%$).</li>
+            </ul>
+          </div>
+
+          <div class="card card-accent-gold" style="justify-content: center;">
+            <div class="card-title">Kết quả tính toán tiền lãi thực tế</div>
+            <div class="equation-box" style="font-size: 1rem; text-align: left; background: #fafaf9;">
+              <strong>Lãi suất danh nghĩa hiện tại:</strong><br>
+              $$\text{Coupon Rate} = 5.5\% + 4.0\% = 9.5\%/\text{năm}$$
+              
+              <div style="margin-top: 15px;"><strong>Tiền lãi thực nhận mỗi kỳ 6 tháng:</strong></div>
+              $$\text{Coupon} = 100,000 \times \frac{9.5\%}{2} = 4,750 \text{ VND/trái phiếu}$$
+            </div>
+            <p style="font-size: 0.8rem; color: #64748b; text-align: center;">Vào mỗi kỳ 6 tháng, nhà đầu tư sẽ nhận 4,750 VND tiền lãi cho mỗi trái phiếu đang sở hữu.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 8 ==================== -->
+      <div class="slide divider-theme">
+        <div class="divider-num">MODULE 02</div>
+        <h2 class="divider-title">THE PHILOSOPHY OF VALUATION</h2>
+        <p class="divider-desc">
+          Bản chất của định giá là gì? Tại sao "mua trái phiếu là mua dòng tiền trong tương lai"? Phương pháp xác định tỷ suất sinh lời đòi hỏi ($r$) tại thị trường Việt Nam.
+        </p>
+      </div>
+
+      <!-- ==================== SLIDE 9 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 2: Philosophy of Valuation</div>
+          <div class="slide-counter">09 / 32</div>
+        </div>
+        <h2 class="slide-title">NGUYÊN LÝ DÒNG TIỀN: "MUA DÒNG TIỀN"</h2>
+        <div class="slide-body">
+          <div class="card card-accent-blue">
+            <div class="card-title">Bản chất của định giá tài chính</div>
+            <p style="font-size: 1.05rem;">Giá trị của trái phiếu ngày hôm nay bằng <strong>tổng toàn bộ dòng tiền</strong> nó mang lại trong tương lai, quy về giá trị hiện tại (Present Value - $PV$) bằng cách chiết khấu theo thời gian.</p>
+          </div>
+          
+          <div class="grid-2" style="margin-top: 10px; align-items: center;">
+            <div>
+              <p style="font-size: 0.95rem; margin-bottom: 8px;">Khi sở hữu một trái phiếu, dòng tiền tương lai của bạn được cam kết rõ ràng:</p>
+              <ul class="sleek-list" style="font-size: 0.9rem;">
+                <li><strong>Tiền lãi định kỳ (Coupon - $C$):</strong> Nhận theo quý, 6 tháng hoặc hàng năm.</li>
+                <li><strong>Tiền gốc khi đáo hạn (Par value - $F$):</strong> Nhận trọn vẹn tại ngày cuối cùng.</li>
+              </ul>
+            </div>
+            
+            <div class="equation-box" style="padding: 20px; border-left: 4px solid var(--accent-gold);">
+              <span style="font-size: 0.85rem; text-transform: uppercase; color: #64748b; font-weight: bold; display: block; margin-bottom: 8px;">Mô hình toán chiết khấu</span>
+              <span style="font-size: 1.5rem; font-weight: 700; color: var(--primary-dark);">$$PV = \sum_{t=1}^{n} \frac{C_t}{(1+r)^t} + \frac{F}{(1+r)^n}$$</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 10 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 2: Philosophy of Valuation</div>
+          <div class="slide-counter">10 / 32</div>
+        </div>
+        <h2 class="slide-title">TỶ SUẤT CHIẾT KHẤU & PHẦN BÙ RỦI RO</h2>
+        <div class="slide-body">
+          <p>Tỷ suất sinh lời đòi hỏi ($r$) của nhà đầu tư quyết định trực tiếp đến giá trị hiện tại của trái phiếu:</p>
+          
+          <div class="equation-box" style="font-size: 1.3rem; color: var(--primary-dark); font-weight: 700;">
+            $$r = \text{Lại suất phi rủi ro (Risk-free Rate)} + \text{Phần bù rủi ro (Risk Premium)}$$
+          </div>
+
+          <div class="grid-2" style="margin-top: 10px;">
+            <div class="card card-accent-blue">
+              <div class="card-title" style="font-size: 1.1rem;">Lãi suất phi rủi ro (Risk-free Rate)</div>
+              <p style="font-size: 0.88rem;">Tỷ suất khi đầu tư vào nơi an toàn tuyệt đối, không có khả năng vỡ nợ.</p>
+              <p style="font-size: 0.88rem; color: #475569; font-weight: 600;">Mốc chuẩn tại Việt Nam: Lợi suất Trái phiếu Chính phủ Việt Nam (VGBY) cùng kỳ hạn còn lại.</p>
+            </div>
+            
+            <div class="card card-accent-gold">
+              <div class="card-title" style="font-size: 1.1rem;">Phần bù rủi ro (Risk Premium)</div>
+              <p style="font-size: 0.88rem;">Khoản bù đắp bắt buộc để nhà đầu tư chấp nhận cho doanh nghiệp vay tiền:</p>
+              <ul style="font-size: 0.82rem; padding-left: 15px; display: flex; flex-direction: column; gap: 4px; color: #475569;">
+                <li><strong>Credit Risk:</strong> Bù rủi ro vỡ nợ của doanh nghiệp.</li>
+                <li><strong>Liquidity Risk:</strong> Bù rủi ro khó mua đi bán lại trên thị trường thứ cấp.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 11 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 2: Philosophy of Valuation</div>
+          <div class="slide-counter">11 / 32</div>
+        </div>
+        <h2 class="slide-title">XẾP HẠNG TÍN NHIỆM & BIÊN ĐỘ RỦI RO</h2>
+        <div class="slide-body grid-2">
+          
+          <div>
+            <p style="margin-bottom: 12px;"><strong>Xếp hạng tín nhiệm (Credit Rating):</strong></p>
+            <p style="font-size: 0.95rem; margin-bottom: 12px; color: #475569;">
+              Là thước đo đánh giá chính xác sức khỏe tài chính và khả năng trả nợ của tổ chức phát hành, được cấp bởi các đơn vị định hạng nội địa được cấp phép (ví dụ: <strong>FiinRatings</strong>, <strong>Saigon Ratings</strong>).
+            </p>
+            <div class="callout callout-mint" style="font-size: 0.88rem;">
+              <strong>Ghi chú:</strong><br>
+              Xếp hạng tín nhiệm chính là công cụ chuẩn hóa giúp định lượng <i>Credit Risk Premium</i>. Hạng tín nhiệm càng cao $\rightarrow$ Phần bù càng thấp $\rightarrow$ Lãi suất đòi hỏi ($r$) giảm.
+            </div>
+          </div>
+
+          <div>
+            <div class="rating-ladder">
+              <div class="rating-step" style="background-color: #1e3a8a;">
+                <div class="rating-badge">AAA</div>
+                <div class="rating-premium">Rủi ro tối thiểu | Premium đòi hỏi rất thấp</div>
+              </div>
+              <div class="rating-step" style="background-color: #1d4ed8;">
+                <div class="rating-badge">AA</div>
+                <div class="rating-premium">An toàn cao | Premium thấp</div>
+              </div>
+              <div class="rating-step" style="background-color: #3b82f6;">
+                <div class="rating-badge">BBB</div>
+                <div class="rating-premium">Độ an toàn trung bình | Premium trung bình</div>
+              </div>
+              <div class="rating-step" style="background-color: #f59e0b;">
+                <div class="rating-badge">BB</div>
+                <div class="rating-premium">Đầu cơ nhẹ | Premium bắt đầu cao</div>
+              </div>
+              <div class="rating-step" style="background-color: #ef4444;">
+                <div class="rating-badge">CCC</div>
+                <div class="rating-premium">Rủi ro vỡ nợ cao | Premium cực lớn</div>
+              </div>
+            </div>
+            <p style="font-size: 0.75rem; color: #64748b; margin-top: 8px; text-align: center;">Mô phỏng thang xếp hạng tiêu chuẩn áp dụng trong định phí rủi ro.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 12 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 2: Philosophy of Valuation</div>
+          <div class="slide-counter">12 / 32</div>
+        </div>
+        <h2 class="slide-title">VÍ DỤ THỰC TẾ: XÁC ĐỊNH CHIẾT KHẤU ($r$)</h2>
+        <div class="slide-body">
+          <p>Yêu cầu định giá trái phiếu kỳ hạn còn lại <strong>2 năm</strong> của Tập đoàn Bất động sản X.</p>
+          
+          <div class="grid-3" style="margin-top: 10px;">
+            <div class="card card-accent-blue" style="padding: 16px;">
+              <span style="font-size: 0.8rem; font-weight: bold; color: #64748b;">BƯỚC 1: RISK-FREE RATE</span>
+              <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary-dark);">2.5%</div>
+              <p style="font-size: 0.78rem;">Tra cứu lợi suất TP Chính phủ (VGBY) kỳ hạn 2 năm trên HNX.</p>
+            </div>
+            
+            <div class="card card-accent-gold" style="padding: 16px;">
+              <span style="font-size: 0.8rem; font-weight: bold; color: #64748b;">BƯỚC 2: CREDIT RISK</span>
+              <div style="font-size: 1.8rem; font-weight: 800; color: #b45309;">4.5%</div>
+              <p style="font-size: 0.78rem;">Phần bù rủi ro tín dụng của X dựa trên xếp hạng BB và tỷ lệ nợ.</p>
+            </div>
+            
+            <div class="card card-accent-mint" style="padding: 16px;">
+              <span style="font-size: 0.8rem; font-weight: bold; color: #64748b;">BƯỚC 3: LIQUIDITY RISK</span>
+              <div style="font-size: 1.8rem; font-weight: 800; color: #047857;">1.0%</div>
+              <p style="font-size: 0.78rem;">Phần bù rủi ro thanh khoản trên thị trường thứ cấp.</p>
+            </div>
+          </div>
+
+          <div class="callout" style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between; padding: 15px 30px;">
+            <div>
+              <span style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: #854d0e;">Tỷ suất sinh lời đòi hỏi của bạn:</span>
+              <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary-dark); margin-top: 2px;">$r = 2.5\% + 4.5\% + 1.0\% = 8.0\%/\text{năm}$</div>
+            </div>
+            <div style="max-width: 50%; font-size: 0.82rem; line-height: 1.4; color: #713f12; border-left: 2px solid var(--accent-gold); padding-left: 15px;">
+              Quy luật cốt lõi: Con số <strong>8.0%</strong> này chính là "thước đo" dùng để quy dòng tiền tương lai của X về hôm nay.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 13 ==================== -->
+      <div class="slide divider-theme">
+        <div class="divider-num">MODULE 03</div>
+        <h2 class="divider-title">VALUATION MODELS IN PRACTICE</h2>
+        <p class="divider-desc">
+          Chi tiết 3 mô hình định giá phổ biến nhất tại thị trường Việt Nam. Phân biệt Clean Price vs. Dirty Price và hướng dẫn tính toán lãi cộng dồn thực tế.
+        </p>
+      </div>
+
+      <!-- ==================== SLIDE 14 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 3: Valuation Models</div>
+          <div class="slide-counter">14 / 32</div>
+        </div>
+        <h2 class="slide-title">1. TRÁI PHIẾU LÃI CỐ ĐỊNH (PLAIN VANILLA)</h2>
+        <div class="slide-body grid-2">
+          
+          <div class="card card-accent-blue">
+            <div class="card-title">Mô tả & Công thức</div>
+            <p style="font-size: 0.9rem;">Tiền lãi ($C$) nhận cố định và bằng nhau mỗi kỳ. Áp dụng cho Trái phiếu chính phủ và các khoản trái phiếu nợ thông thường.</p>
+            <div class="equation-box" style="font-size: 0.95rem;">
+              $$PV = \sum_{t=1}^{n} \frac{C}{(1+r)^t} + \frac{F}{(1+r)^n}$$
+            </div>
+            <p style="font-size: 0.8rem; color: #64748b;">Với lãi suất trả định kỳ bằng nhau, ta có thể rút gọn công thức chiết khấu dòng tiền lãi thành chuỗi dòng tiền đều.</p>
+          </div>
+
+          <div class="card card-accent-gold" style="font-size: 0.85rem;">
+            <div class="card-title" style="font-size: 1.1rem;">Thực hành Định giá VGB X</div>
+            <ul style="padding-left: 15px; display: flex; flex-direction: column; gap: 4px;">
+              <li>Mệnh giá ($F$) = 100,000 VND</li>
+              <li>Kỳ hạn còn lại ($n$) = <strong>2 năm</strong>, trả lãi hàng năm</li>
+              <li>Lãi suất Coupon = $5\%/\text{năm} \rightarrow C = 5,000$ VND</li>
+              <li>Tỷ suất sinh lời đòi hỏi ($r$) = $4\%/\text{năm}$</li>
+            </ul>
+            <div class="equation-box" style="background: #fafaf9; border-color: rgba(197, 160, 89, 0.3); font-size: 0.88rem; text-align: left; padding: 10px;">
+              $$PV = \frac{5,000}{(1+0.04)^1} + \frac{105,000}{(1+0.04)^2}$$
+              $$PV = 4,807.69 + 97,078.40 = 101,886 \text{ VND}$$
+            </div>
+            <div class="callout callout-mint" style="padding: 8px 12px; font-size: 0.78rem;">
+              <strong>Nhận xét:</strong> Vì Coupon ($5\%$) > Mong đợi ($4\%$), trái phiếu được định giá cao hơn mệnh giá $\rightarrow$ Giao dịch ở trạng thái thặng dư (Premium).
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 15 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 3: Valuation Models</div>
+          <div class="slide-counter">15 / 32</div>
+        </div>
+        <h2 class="slide-title">2. TRÁI PHIẾU LÃI THẢ NỔI (FLOATING-RATE)</h2>
+        <div class="slide-body">
+          <p style="font-size: 0.95rem; margin-bottom: 5px;">Mô hình phổ biến nhất tại thị trường TPDN Việt Nam. Do dòng tiền tương lai không cố định, quá trình định giá của các định chế tài chính bắt buộc theo 2 bước:</p>
+          
+          <div class="grid-2">
+            <div class="card card-accent-blue" style="padding: 16px; font-size: 0.88rem;">
+              <div class="card-title" style="font-size: 1.1rem;">Bước 1: Dự phóng (Forecasting)</div>
+              <p>Dự báo lãi suất tham chiếu tương lai của Big4 để ước lượng Coupon ($C_t$) cho từng kỳ tới.</p>
+            </div>
+            <div class="card card-accent-gold" style="padding: 16px; font-size: 0.88rem;">
+              <div class="card-title" style="font-size: 1.1rem;">Bước 2: Chiết khấu (Discounting)</div>
+              <p>Áp dụng tỷ suất sinh lời đòi hỏi $r$ đã cộng đủ phần bù rủi ro doanh nghiệp tương ứng để chiết khấu.</p>
+            </div>
+          </div>
+
+          <div class="card card-accent-mint" style="margin-top: 10px; padding: 15px; font-size: 0.85rem;">
+            <strong>Ví dụ tính toán thực tế:</strong> Trái phiếu Cty Chứng khoán, còn 1 năm, trả lãi 6T/lần (`n=2` kỳ). Par = 100k.
+            <div class="grid-2" style="margin-top: 8px; gap: 20px; align-items: center;">
+              <div>
+                • Kỳ 1 (6 tháng tới): Lãi suất đã chốt ở mức $8\%/\text{năm} \rightarrow C_1 = 4,000$ VND.<br>
+                • Kỳ 2 (Đáo hạn): Dự báo lãi suất tham chiếu tăng $\rightarrow$ Coupon $9\%/\text{năm} \rightarrow C_2 = 4,500$ VND.<br>
+                • Lãi suất chiết khấu kỳ vọng: $r = 8.5\%/\text{năm} \rightarrow$ Chiết khấu 6T = $4.25\%$.
+              </div>
+              <div class="equation-box" style="margin: 0; background: #ffffff;">
+                $$PV = \frac{4,000}{(1.0425)^1} + \frac{104,500}{(1.0425)^2} = 99,992 \text{ VND}$$
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 16 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 3: Valuation Models</div>
+          <div class="slide-counter">16 / 32</div>
+        </div>
+        <h2 class="slide-title">3. TRÁI PHIẾU KHÔNG CÓ COUPON (ZERO-COUPON)</h2>
+        <div class="slide-body grid-2">
+          
+          <div class="card card-accent-blue" style="justify-content: center;">
+            <div class="card-title">Bản chất của Trái phiếu Zero-Coupon</div>
+            <p style="font-size: 0.92rem; line-height: 1.5;">Trái phiếu không chi trả bất kỳ một khoản lãi định kỳ nào trong suốt vòng đời ($C = 0$).</p>
+            <p style="font-size: 0.92rem; line-height: 1.5;">Thay vào đó, nhà đầu tư được mua nó với mức <strong>giá chiết khấu sâu (Discount)</strong> và được nhận lại trọn vẹn Mệnh giá tại ngày đáo hạn.</p>
+            <div class="equation-box">
+              $$PV = \frac{F}{(1+r)^n}$$
+            </div>
+          </div>
+
+          <div class="card card-accent-gold" style="justify-content: center;">
+            <div class="card-title">Ví dụ cấu trúc tài chính ngân hàng</div>
+            <p style="font-size: 0.9rem;">Ngân hàng bán một kỳ phiếu ngắn hạn (hoặc trái phiếu zero-coupon) thời gian đáo hạn đúng <strong>1 năm</strong> nữa. Mệnh giá 100,000 VND. Bạn đòi hỏi mức tỷ suất lợi nhuận $7\%/\text{năm}$.</p>
+            <div class="equation-box" style="background: #fafaf9; border-color: rgba(197, 160, 89, 0.3);">
+              $$PV = \frac{100,000}{(1 + 0.07)^1} = 93,458 \text{ VND}$$
+            </div>
+            <div class="callout" style="padding: 10px 15px; font-size: 0.8rem;">
+              <strong>Giải thích:</strong> Bạn bỏ ra 93,458 VND hôm nay để nhận lại 100,000 VND sau 1 năm. Khoản chênh lệch 6,542 VND chính là tiền lãi của bạn, tương ứng lợi suất đúng bằng $7\%$.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 17 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 3: Valuation Models</div>
+          <div class="slide-counter">17 / 32</div>
+        </div>
+        <h2 class="slide-title">CLEAN PRICE VS. DIRTY PRICE</h2>
+        <div class="slide-body">
+          <p style="font-size: 0.95rem;">Khi giao dịch trái phiếu trên thị trường thứ cấp, ngày thanh toán thực tế (Settlement Date) thường nằm <strong>ở giữa 2 kỳ trả lãi</strong>. Chúng ta phải phân định rõ 2 khái niệm giá:</p>
+          
+          <div class="grid-2">
+            <div class="card card-accent-blue" style="padding: 18px; font-size: 0.85rem;">
+              <div class="card-title" style="font-size: 1.1rem;">1. Clean Price (Giá sạch)</div>
+              <p>Mức giá hiển thị công khai trên bảng giá trực tuyến của các sàn HNX hoặc bảng giá của các CT Chứng khoán (TCBS, VNDIRECT...). Giá này <strong>chưa bao gồm</strong> lãi dồn tích.</p>
+            </div>
+            
+            <div class="card card-accent-gold" style="padding: 18px; font-size: 0.85rem;">
+              <div class="card-title" style="font-size: 1.1rem;">2. Dirty Price (Giá bẩn / Giá thanh toán)</div>
+              <p>Mức giá thực tế mà bên mua phải thanh toán cho bên bán trên hợp đồng. Giá này bằng giá sạch cộng thêm tiền lãi tích lũy từng ngày.</p>
+              <div style="font-weight: 700; color: var(--primary-dark); font-size: 0.95rem; margin-top: 5px;">$\text{Dirty Price} = \text{Clean Price} + \text{AI}$</div>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 15px; font-size: 0.85rem; gap: 8px;">
+            <strong>Nguyên tắc công bằng (Accrued Interest - $AI$):</strong>
+            Bên mua nắm giữ trái phiếu bao nhiêu ngày thì được hưởng bấy nhiêu ngày lãi. Khi đến kỳ trả lãi kế tiếp, tổ chức phát hành sẽ chuyển 100% tiền lãi của cả kỳ cho người mua hiện tại. Do đó, người mua phải ứng trước phần tiền lãi tích lũy dồn tích từ kỳ trước cho người bán vào ngày giao dịch.
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 18 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 3: Valuation Models</div>
+          <div class="slide-counter">18 / 32</div>
+        </div>
+        <h2 class="slide-title">VÍ DỤ THỰC TẾ: TÍNH LÃI CỘNG DỒN (AI)</h2>
+        <div class="slide-body">
+          <p style="font-size: 0.92rem; margin-bottom: 2px;">Khách hàng giao dịch mua Trái phiếu Doanh nghiệp X vào ngày <strong>15/04/2026</strong>. Mệnh giá 100,000 VND. Lãi suất danh nghĩa $10.5\%/\text{năm}$, trả lãi hàng năm. Ngày trả lãi gần nhất là 01/01/2026. Clean Price là 102,000 VND. Tính số tiền thanh toán thực tế.</p>
+          
+          <div class="timeline-graphic">
+            <div class="timeline-line"></div>
+            <div class="timeline-fill"></div>
+            <div class="timeline-node active" style="left: 0%;"></div>
+            <div class="timeline-label" style="left: 0%;">Last Coupon<br>(01/01/2026)</div>
+            
+            <div class="timeline-node active gold" style="left: 45%;"></div>
+            <div class="timeline-label" style="left: 45%; color: var(--accent-gold);">Settlement Date<br>(15/04/2026)<br><strong>104 ngày dồn tích</strong></div>
+            
+            <div class="timeline-node" style="left: 100%;"></div>
+            <div class="timeline-label" style="left: 100%;">Next Coupon<br>(01/01/2027)</div>
+          </div>
+
+          <div class="grid-2" style="margin-top: 15px; font-size: 0.85rem; gap: 20px;">
+            <div class="card card-accent-blue" style="padding: 15px;">
+              <strong>Bước 1: Tính số ngày tích lũy thực tế ($Actual/365$)</strong><br>
+              • Tháng 1: 30 ngày (tính từ sau 01/01)<br>
+              • Tháng 2: 28 ngày | Tháng 3: 31 ngày | Tháng 4: 15 ngày<br>
+              $\rightarrow$ <strong>Tổng số ngày tích lũy dồn tích = 104 ngày</strong>.
+            </div>
+            
+            <div class="card card-accent-gold" style="padding: 15px;">
+              <strong>Bước 2: Tính Accrued Interest ($AI$) & Dirty Price</strong><br>
+              $$AI = 100,000 \times 10.5\% \times \frac{104}{365} = 2,991.78 \text{ VND}$$
+              $$\text{Dirty Price} = 102,000 + 2,991.78 = 104,991.78 \text{ VND}$$
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 19 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 3: Valuation Models</div>
+          <div class="slide-counter">19 / 32</div>
+        </div>
+        <h2 class="slide-title">HƯỚNG DẪN ỨNG DỤNG HÀM EXCEL</h2>
+        <div class="slide-body">
+          <p style="font-size: 0.95rem;">Trong hoạt động tư vấn và định giá hàng ngày, tuyệt đối không dùng tay bấm công thức. Sử dụng hai hàm Excel tiêu chuẩn sau:</p>
+          
+          <div class="grid-2">
+            <div>
+              <div style="font-size: 0.88rem; font-weight: bold; color: var(--primary); margin-bottom: 6px;">1. Tính Clean Price (Giá sạch trực tuyến)</div>
+              <pre><code>=PRICE(
+  settlement, 
+  maturity, 
+  rate, 
+  yld, 
+  redemption, 
+  frequency, 
+  [basis]
+)</code></pre>
+            </div>
+            
+            <div>
+              <div style="font-size: 0.88rem; font-weight: bold; color: var(--accent-gold); margin-bottom: 6px;">2. Tính Lợi suất đến hạn thực tế (YTM)</div>
+              <pre><code>=YIELD(
+  settlement, 
+  maturity, 
+  rate, 
+  pr, 
+  redemption, 
+  frequency, 
+  [basis]
+)</code></pre>
+            </div>
+          </div>
+
+          <div class="callout callout-mint" style="font-size: 0.82rem; padding: 10px 20px;">
+            <strong>Tham số Basis cực kỳ quan trọng tại Việt Nam:</strong><br>
+            Đặt tham số <code>[basis] = 3</code> để áp dụng quy ước đếm ngày <strong>Actual/365</strong> chuẩn của thị trường tài chính Việt Nam. Bỏ trống hoặc đặt sai sẽ dẫn đến sai lệch phần số ngày dồn tích.
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 20 ==================== -->
+      <div class="slide divider-theme">
+        <div class="divider-num">MODULE 04</div>
+        <h2 class="divider-title">ADVANCED YIELD METRICS</h2>
+        <p class="divider-desc">
+          Bộ thước đo hiệu quả đầu tư thực tế trên thị trường. Đo lường CY, YTM, YTC và nguyên tắc phòng vệ danh mục bằng Yield to Worst ($YTW$).
+        </p>
+      </div>
+
+      <!-- ==================== SLIDE 21 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 4: Yield Metrics</div>
+          <div class="slide-counter">21 / 32</div>
+        </div>
+        <h2 class="slide-title">1. LỢI SUẤT HIỆN HÀNH (CURRENT YIELD)</h2>
+        <div class="slide-body grid-2">
+          
+          <div class="card card-accent-blue" style="justify-content: center;">
+            <div class="card-title">Ý nghĩa & Công thức</div>
+            <p style="font-size: 0.92rem; line-height: 1.5;">Thước đo cực kỳ đơn giản để đánh giá hiệu suất dòng tiền mặt (tiền lãi) nhận về hàng năm so với số vốn thực tế bỏ ra.</p>
+            <div class="equation-box">
+              $$CY = \frac{\text{Tiền lãi hàng năm } (C)}{\text{Giá thị trường hiện tại } (PV)}$$
+            </div>
+            <p style="font-size: 0.8rem; color: #64748b; font-style: italic;">Lưu ý: Bỏ qua yếu tố thời gian và sự chênh lệch giá gốc khi đáo hạn.</p>
+          </div>
+
+          <div class="card card-accent-gold" style="justify-content: center;">
+            <div class="card-title">Ví dụ thực tế Ngân hàng V</div>
+            <p style="font-size: 0.9rem;">Khách hàng mua trái phiếu ngân hàng V trên thị trường thứ cấp. Mệnh giá 100k, Coupon Rate = $7\%/\text{năm}$. Lãi suất thị trường đang giảm khiến giá trái phiếu bị đẩy lên <strong>104,000 VND</strong>.</p>
+            <div class="equation-box" style="background: #fafaf9; border-color: rgba(197, 160, 89, 0.3);">
+              $$CY = \frac{100,000 \times 7\%}{104,000} = 6.73\%/\text{năm}$$
+            </div>
+            <p style="font-size: 0.8rem; color: #7f1d1d; font-weight: 500;">Lời khuyên cho Broker: Dù Coupon là 7%, nhưng thực tế tỷ suất dòng tiền trên vốn bỏ ra của khách hàng chỉ đạt 6.73% do mua ở mức Premium.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 22 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 4: Yield Metrics</div>
+          <div class="slide-counter">22 / 32</div>
+        </div>
+        <h2 class="slide-title">2. LỢI SUẤT ĐẾN HẠN (YTM)</h2>
+        <div class="slide-body">
+          <p style="font-size: 0.92rem; margin-bottom: 2px;"><strong>Thước đo vàng</strong> chuẩn quốc tế. Giả định NĐT giữ trái phiếu đến ngày đáo hạn cuối và tái đầu tư toàn bộ tiền lãi với cùng lợi suất này. Công thức tính nhanh gần đúng:</p>
+          
+          <div class="equation-box" style="font-size: 1.15rem; color: var(--primary-dark); font-weight: 700;">
+            $$YTM \approx \frac{C + \frac{F - PV}{n}}{\frac{F + PV}{2}}$$
+          </div>
+
+          <div class="card card-accent-mint" style="font-size: 0.85rem; padding: 15px; margin-top: 8px;">
+            <strong>Ví dụ thực tế:</strong> Trái phiếu Năng lượng tái tạo. Par = 100k, Coupon $10\%/\text{năm}$ ($C = 10,000$). Kỳ hạn còn lại 3 năm ($n=3$). Do doanh nghiệp bị hạ nhẹ bậc tín nhiệm, giá giảm xuống <strong>95,000 VND</strong>.
+            <div class="grid-2" style="margin-top: 8px; gap: 20px; align-items: center;">
+              <div class="equation-box" style="margin: 0; background: #ffffff;">
+                $$YTM \approx \frac{10,000 + \frac{100,000 - 95,000}{3}}{\frac{100,000 + 95,000}{2}} \approx 11.97\%/\text{năm}$$
+              </div>
+              <div>
+                • Do mua ở mức giá chiết khấu sâu (Discount), NĐT được hưởng "lợi nhuận kép": tiền lãi định kỳ và chênh lệch giá khi đáo hạn.<br>
+                • Do đó, YTM ($11.97\%$, chính xác $12.12\%$) cao hơn hẳn so với Coupon Rate ($10\%$).
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 23 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 4: Yield Metrics</div>
+          <div class="slide-counter">23 / 32</div>
+        </div>
+        <h2 class="slide-title">3. LỢI SUẤT ĐẾN KỲ MUA LẠI (YTC)</h2>
+        <div class="slide-body grid-2">
+          
+          <div class="card card-accent-blue" style="justify-content: center;">
+            <div class="card-title">Điều khoản Call Option</div>
+            <p style="font-size: 0.9rem; line-height: 1.5;">Tại Việt Nam, nhiều doanh nghiệp (đặc biệt là Ngân hàng, BĐS) phát hành trái phiếu kèm quyền <strong>Mua lại trước hạn (Redemption)</strong>.</p>
+            <p style="font-size: 0.9rem; line-height: 1.5;">Khi lãi suất thị trường giảm mạnh, doanh nghiệp sẽ tất toán nợ cũ sớm để giảm chi phí vốn. Khi đó, vòng đời bị cắt ngắn và ta phải sử dụng $YTC$.</p>
+          </div>
+
+          <div class="card card-accent-gold" style="justify-content: center;">
+            <div class="card-title">Công thức gần đúng YTC</div>
+            <div class="equation-box" style="font-size: 0.95rem;">
+              $$YTC \approx \frac{C + \frac{CP - PV}{t}}{\frac{CP + PV}{2}}$$
+            </div>
+            <ul style="padding-left: 15px; font-size: 0.8rem; display: flex; flex-direction: column; gap: 4px; color: #475569;">
+              <li><strong>$CP$ (Call Price):</strong> Giá doanh nghiệp cam kết mua lại trước hạn (Thường bằng Mệnh giá hoặc $101\% - 102\%$ mệnh giá).</li>
+              <li><strong>$t$ (Years to Call):</strong> Số năm còn lại đến ngày có quyền mua lại sớm nhất của tổ chức phát hành.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 24 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 4: Yield Metrics</div>
+          <div class="slide-counter">24 / 32</div>
+        </div>
+        <h2 class="slide-title">QUẢN TRỊ RỦI RO: YIELD TO WORST (YTW)</h2>
+        <div class="slide-body grid-2" style="align-items: center;">
+          
+          <div>
+            <p style="margin-bottom: 12px;">Đối với một trái phiếu có điều khoản mua lại sớm, kịch bản dòng tiền của nhà đầu tư phụ thuộc hoàn toàn vào hành động của doanh nghiệp.</p>
+            <div class="callout callout-mint" style="font-size: 0.9rem; margin-bottom: 12px;">
+              <strong>Nguyên tắc Yield to Worst ($YTW$):</strong><br>
+              Bắt buộc tính toán đồng thời cả 2 chỉ số <strong>YTM</strong> và <strong>YTC</strong>, sau đó lấy <strong>giá trị thấp nhất</strong> trong hai chỉ số để tư vấn cho khách hàng.
+            </div>
+            <p style="font-size: 0.82rem; color: #64748b;">Đây là nguyên tắc bắt buộc để đảm bảo sự bảo vệ tối đa lợi ích cho nhà đầu tư trước mọi kịch bản của tổ chức phát hành.</p>
+          </div>
+
+          <div class="card card-accent-gold" style="font-size: 0.85rem; padding: 20px;">
+            <strong>Mô phỏng bài toán thực tế:</strong><br>
+            • Tính $YTM$ (Nắm giữ 4 năm đáo hạn) = $8.6\%/\text{năm}$<br>
+            • Tính $YTC$ (Doanh nghiệp mua lại sau 1 năm) = $10.1\%/\text{năm}$
+            <div style="height: 1px; background: #cbd5e1; margin: 10px 0;"></div>
+            <div style="font-weight: 700; color: var(--primary-dark); font-size: 0.95rem;">
+              $\rightarrow$ Yield to Worst ($YTW$) = $8.6\%$
+            </div>
+            <p style="font-size: 0.8rem; margin-top: 8px; color: #475569;">
+              Chúng ta dùng con số <strong>8.6%</strong> để tư vấn cho khách hàng, đây là kịch bản xấu nhất về lợi suất họ phải chịu.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 25 ==================== -->
+      <div class="slide divider-theme">
+        <div class="divider-num">MODULE 05</div>
+        <h2 class="divider-title">VIETNAMESE MARKET CASE STUDIES</h2>
+        <p class="divider-desc">
+          Phân tích thực tế thị trường Việt Nam. Bài học xương máu từ nhóm Bất động sản, cách nhận biết bẫy lợi suất bằng Credit Metrics, và quy luật ngược chiều bất biến.
+        </p>
+      </div>
+
+      <!-- ==================== SLIDE 26 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 5: Market Case Studies</div>
+          <div class="slide-counter">26 / 32</div>
+        </div>
+        <h2 class="slide-title">TP NGÂN HÀNG VS. TP BẤT ĐỘNG SẢN</h2>
+        <div class="slide-body grid-2">
+          
+          <div class="card card-accent-blue" style="font-size: 0.88rem;">
+            <div class="card-title">Nhóm Ngân hàng (VGB / Bank Bonds)</div>
+            <ul class="sleek-list" style="gap: 5px;">
+              <li><strong>Mức lãi suất trung bình:</strong> $6.5\% - 7.5\%/\text{năm}$.</li>
+              <li><strong>Mức độ rủi ro tín dụng:</strong> Cực thấp, chịu sự giám sát chặt chẽ của Ngân hàng Nhà nước.</li>
+              <li><strong>Đặc điểm:</strong> Thanh khoản thị trường thứ cấp cực cao, biến động định giá thấp.</li>
+            </ul>
+          </div>
+
+          <div class="card card-accent-gold" style="font-size: 0.88rem;">
+            <div class="card-title" style="color: #b45309;">Nhóm Bất động sản (Real Estate Bonds)</div>
+            <ul class="sleek-list" style="gap: 5px;">
+              <li><strong>Mức lãi suất cam kết:</strong> $11.5\% - 13.5\%/\text{năm}$.</li>
+              <li><strong>Mức độ rủi ro tín dụng:</strong> Cao, phụ thuộc mạnh vào tính chu kỳ và pháp lý dự án.</li>
+              <li><strong>Đặc điểm:</strong> Thanh khoản thấp, rủi ro tắc nghẽn dòng tiền thanh toán gốc lãi cao.</li>
+            </ul>
+          </div>
+
+        </div>
+        <div class="callout" style="padding: 10px 20px; font-size: 0.82rem; margin-top: 10px;">
+          <strong>Bài học tư duy cho Chuyên viên:</strong> Khoảng chênh lệch $5\% - 6\%$ chính là phần bù rủi ro tín dụng (Credit Risk Premium). Lãi suất cao là vì doanh nghiệp <strong>bắt buộc phải trả cao</strong> để bù đắp rủi ro cho nhà đầu tư, không phải là một món hời miễn phí.
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 27 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 5: Market Case Studies</div>
+          <div class="slide-counter">27 / 32</div>
+        </div>
+        <h2 class="slide-title">BẪY ĐỊNH GIÁ & HỆ SỐ KHẢ NĂNG TRẢ LÃI</h2>
+        <div class="slide-body grid-2">
+          
+          <div>
+            <div class="callout" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05); color: #7f1d1d;">
+              <strong>Bẫy Lợi suất (The Yield Trap):</strong><br>
+              Hiện tượng một trái phiếu được bán tháo sâu trên thị trường thứ cấp (ví dụ chỉ còn 70% mệnh giá) khiến tính toán YTM nhảy vọt lên mức <strong>$30\% - 50\%/\text{năm}$</strong>.
+            </div>
+            <p style="font-size: 0.88rem; margin-top: 10px; color: #475569;">
+              Mô hình định giá tài chính dựa trên giả định <i>"doanh nghiệp sẽ thanh toán đủ tiền gốc lãi tương lai"</i>. Nhưng nếu doanh nghiệp cạn kiệt dòng tiền, kịch bản tương lai thực tế là bằng 0, khiến giá trị thực của trái phiếu cũng tiến về 0.
+            </p>
+          </div>
+
+          <div class="card card-accent-gold" style="font-size: 0.85rem; padding: 20px; justify-content: center;">
+            <div class="card-title">Hệ số kiểm tra nhanh (Credit Metrics)</div>
+            <p>Trước khi đặt bút định giá, bắt buộc kiểm định khả năng trả nợ của tổ chức phát hành qua hệ số:</p>
+            <div class="equation-box">
+              $$\text{Interest Coverage Ratio} = \frac{EBIT}{\text{Chi phí lãi vay}}$$
+            </div>
+            <div class="callout callout-mint" style="padding: 10px 15px; font-size: 0.78rem;">
+              • <strong>Hệ số < 1.0:</strong> Doanh nghiệp kinh doanh không làm đủ tiền để trả chi phí lãi vay $\rightarrow$ Mô hình chiết khấu dòng tiền chính thức đổ vỡ.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 28 ==================== -->
+      <div class="slide">
+        <div class="slide-header">
+          <div class="slide-section-title">Module 5: Market Case Studies</div>
+          <div class="slide-counter">28 / 32</div>
+        </div>
+        <h2 class="slide-title">QUY LUẬT NGƯỢC CHIỀU BẤT BIẾN</h2>
+        <div class="slide-body">
+          <p style="font-size: 0.95rem; text-align: center;">Quy luật tối thượng mà bất kỳ trader, broker hay nhà quản lý quỹ nào cũng phải nằm lòng:</p>
+          
+          <div class="inverse-container">
+            
+            <div class="inverse-arrow-box">
+              <div class="arrow-icon arrow-up">▲</div>
+              <div style="font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; color: var(--primary-dark);">LÃI SUẤT THỊ TRƯỜNG (r)</div>
+              <div style="font-size: 0.8rem; color: #64748b;">Khi lãi suất gửi tiết kiệm hoặc kỳ vọng đầu tư tăng lên...</div>
+            </div>
+
+            <div style="font-size: 3rem; font-weight: 300; color: #cbd5e1;">⚡</div>
+
+            <div class="inverse-arrow-box">
+              <div class="arrow-icon arrow-down">▼</div>
+              <div style="font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; color: var(--primary-dark);">GIÁ TRÁI PHIẾU (PV)</div>
+              <div style="font-size: 0.8rem; color: #64748b;">Giá trị các dòng tiền tương lai bị chiết khấu nặng hơn và giảm đi...</div>
+            </div>
+
+          </div>
+
+          <div class="callout callout-mint" style="font-size: 0.82rem; padding: 10px 20px; text-align: center;">
+            <strong>Ứng dụng chu kỳ kinh tế:</strong> Khi Ngân hàng Nhà nước (SBV) cắt giảm lãi suất điều hành $\rightarrow$ lãi suất tiết kiệm giảm $\rightarrow$ kỳ vọng của NĐT giảm ($r$ giảm) $\rightarrow$ <strong>Toàn bộ danh mục trái phiếu lãi suất cố định sẽ tăng giá mạnh</strong> mang lại lợi nhuận thặng dư vốn (Capital Gain) vượt trội.
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 29 ==================== -->
+      <div class="slide" style="padding: 40px 60px; justify-content: space-between; gap: 20px;">
+        <div class="slide-header" style="margin-bottom: 15px;">
+          <div class="slide-section-title">Tổng kết bài giảng</div>
+          <div class="slide-counter">29 / 32</div>
+        </div>
+        
+        <div style="margin-bottom: 5px;">
+          <h2 class="slide-title" style="font-size: 1.8rem; margin-bottom: 2px;">BẢN ĐỒ TƯ DUY TỔNG KẾT</h2>
+          <p style="font-size: 0.9rem; color: #64748b; margin: 0;">Sơ đồ cấu trúc phân nhánh kết tinh toàn bộ nội dung nghiệp vụ Định giá Trái phiếu.</p>
+        </div>
+
+        <div class="mindmap-framework">
+          
+          <!-- Cấu phần 1 -->
+          <div class="mm-column card-accent-blue">
+            <div class="mm-col-header">1. Khái niệm cốt lõi</div>
+            <div class="mm-col-body">
+              <div class="mm-item" data-desc="Mệnh giá (Par Value): Quy chuẩn 100,000 VND (Chào bán công chúng) hoặc 100,000,000 VND (Riêng lẻ) tại Việt Nam.">Mệnh giá (Par Value)</div>
+              <div class="mm-item" data-desc="Lãi suất Coupon: Lãi suất danh nghĩa trả định kỳ cho nhà đầu tư. Gồm lãi cố định (Fixed-rate) hoặc lãi thả nổi (Floating-rate = Tiết kiệm Big4 + Biên độ).">Lãi suất danh nghĩa</div>
+              <div class="mm-item" data-desc="Kỳ hạn còn lại: Khi mua bán giao dịch trên thị trường thứ cấp, bắt buộc dùng Kỳ hạn còn lại (Remaining Tenor) để tính định giá, không dùng kỳ hạn gốc.">Kỳ hạn còn lại (Tenor)</div>
+              <div class="mm-item" data-desc="Tần suất trả lãi: Số kỳ trả lãi trong năm. Ở Việt Nam phổ biến nhất là trả lãi 6 tháng/lần (Semi-annual) hoặc 3 tháng/lần (Quarterly).">Tần suất trả lãi</div>
+              <div class="mm-item" data-desc="Biện pháp bảo đảm: Trái phiếu thế chấp bằng tài sản (BĐS, máy móc). Cảnh báo rủi ro cực cao khi thế chấp bằng Cổ phiếu của chính doanh nghiệp.">Biện pháp bảo đảm</div>
+            </div>
+          </div>
+
+          <!-- Cấu phần 2 -->
+          <div class="mm-column card-accent-gold">
+            <div class="mm-col-header">2. Bản chất định giá</div>
+            <div class="mm-col-body">
+              <div class="mm-item" data-desc="Nguyên lý dòng tiền: Giá trị hợp lý của trái phiếu bằng tổng giá trị hiện tại (Present Value) của các dòng tiền tương lai nhận được, quy về hôm nay.">Nguyên lý dòng tiền</div>
+              <div class="mm-item" data-desc="Tỷ suất sinh lời đòi hỏi (r): Thước đo chiết khấu dòng tiền. Công thức: r = Lãi suất phi rủi ro + Phần bù rủi ro của doanh nghiệp.">Tỷ suất sinh lời (r)</div>
+              <div class="mm-item" data-desc="Lãi suất phi rủi ro: Lợi suất trái phiếu chính phủ Việt Nam (VGBY) cùng kỳ hạn còn lại làm mốc chuẩn (Benchmark).">Lãi suất phi rủi ro (VGBY)</div>
+              <div class="mm-item" data-desc="Phần bù rủi ro: Gồm Phần bù rủi ro tín dụng (khả năng vỡ nợ của doanh nghiệp) và Phần bù rủi ro thanh khoản (khó mua đi bán lại).">Phần bù rủi ro</div>
+              <div class="mm-item" data-desc="Xếp hạng tín nhiệm: Mức xếp hạng từ tổ chức nội địa (FiinRatings, Saigon Ratings) làm chiếc la bàn để định lượng chính xác Risk Premium.">Xếp hạng tín nhiệm</div>
+            </div>
+          </div>
+
+          <!-- Cấu phần 3 -->
+          <div class="mm-column card-accent-mint">
+            <div class="mm-col-header">3. Mô hình định giá</div>
+            <div class="mm-col-body">
+              <div class="mm-item" data-desc="Trái phiếu lãi cố định: Plain Vanilla Bond. Coupon không đổi qua các năm. Ví dụ tính VGB với r = 4% cho giá hợp lý thặng dư (Premium).">Trái phiếu lãi cố định</div>
+              <div class="mm-item" data-desc="Trái phiếu lãi thả nổi: Vua của thị trường TPDN Việt Nam. Phải dự phóng lãi suất tương lai rồi chiết khấu dòng tiền theo r.">Trái phiếu lãi thả nổi</div>
+              <div class="mm-item" data-desc="Trái phiếu không lãi: Zero-Coupon Bond. Không trả lãi định kỳ, mua chiết khấu sâu nhận Par đáo hạn. Công thức: PV = F / (1+r)^n.">Trái phiếu không lãi</div>
+              <div class="mm-item" data-desc="Lãi cộng dồn (Accrued Interest - AI): Tiền lãi tích lũy từng ngày từ kỳ trước đến ngày giao dịch thực tế. Quy ước đếm ngày VN: Actual/365.">Lãi cộng dồn (AI)</div>
+              <div class="mm-item" data-desc="Clean vs. Dirty Price: Clean Price là giá hiển thị trên bảng điện tử; Dirty Price là giá thanh toán thực tế bao gồm lãi tích lũy. Dirty = Clean + AI.">Clean vs. Dirty Price</div>
+            </div>
+          </div>
+
+          <!-- Cấu phần 4 -->
+          <div class="mm-column card-accent-dark">
+            <div class="mm-col-header">4. Đo lường hiệu quả</div>
+            <div class="mm-col-body">
+              <div class="mm-item" data-desc="Lợi suất hiện hành (CY): Đo dòng tiền mặt hàng năm trên vốn bỏ ra. CY = Lãi hàng năm / Clean Price. Bỏ qua gốc và thời gian.">Lợi suất hiện hành (CY)</div>
+              <div class="mm-item" data-desc="Lợi suất đến hạn (YTM): Tiêu chuẩn so sánh vàng, giả định giữ đến đáo hạn và tái đầu tư toàn bộ tiền lãi với cùng tỷ suất.">Lợi suất đến hạn (YTM)</div>
+              <div class="mm-item" data-desc="Lợi suất mua lại (YTC): Áp dụng khi trái phiếu có điều khoản Call Option (doanh nghiệp được quyền tất toán nợ sớm khi lãi suất giảm).">Lợi suất mua lại (YTC)</div>
+              <div class="mm-item" data-desc="Yield to Worst (YTW): Mức lợi suất thấp nhất trong các kịch bản YTM và YTC. Dùng làm thước đo thận trọng nhất để tư vấn cho khách hàng.">Yield to Worst (YTW)</div>
+            </div>
+          </div>
+
+          <!-- Cấu phần 5 -->
+          <div class="mm-column card-accent-rose">
+            <div class="mm-col-header">5. Thực tế & Rủi ro</div>
+            <div class="mm-col-body">
+              <div class="mm-item" data-desc="Mối quan hệ ngược chiều: Lãi suất thị trường / Kỳ vọng tăng thì Giá trái phiếu hôm nay giảm và ngược lại. Quy luật tối thượng.">Mối quan hệ ngược chiều</div>
+              <div class="mm-item" data-desc="Bẫy định giá (Yield Trap): Trái phiếu giá chiết khấu cực rẻ, tính ra YTM siêu cao (30-50%) nhưng doanh nghiệp đã mất thanh toán gốc lãi.">Bẫy định giá (Yield Trap)</div>
+              <div class="mm-item" data-desc="Hệ số trả lãi: Interest Coverage Ratio = EBIT / Chi phí lãi vay. Nếu < 1.0, doanh nghiệp không đủ tiền trả lãi vay, mô hình sụp đổ.">Hệ số trả lãi (EBIT/Interest)</div>
+              <div class="mm-item" data-desc="Ngân hàng vs. Bất động sản: Trái phiếu ngân hàng an toàn, thanh khoản tốt; Trái phiếu BĐS biến động lớn, rủi ro tín dụng cao.">Ngân hàng vs. Bất động sản</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Khung diễn giải chi tiết cập nhật khi hover -->
+        <div class="mm-detail-bar" id="mm-detail-bar">
+          <div class="mm-detail-title" id="mm-detail-title">Bản đồ tư duy Định giá Trái phiếu</div>
+          <div class="mm-detail-desc" id="mm-detail-desc">Di chuột qua từng từ khóa trong sơ đồ để xem diễn giải chi tiết và định hướng thực hành nghiệp vụ.</div>
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 30 ==================== -->
+      <div class="slide image-only-theme">
+        <div class="image-slide-container">
+          <img src="bond_valuation_mindmap.png" alt="Sơ đồ tư duy Định giá Trái phiếu">
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 31 ==================== -->
+      <div class="slide image-only-theme">
+        <div class="image-slide-container">
+          <img src="bond-valuation-handbook.png" alt="Sổ tay Định giá Trái phiếu">
+        </div>
+      </div>
+
+      <!-- ==================== SLIDE 32 ==================== -->
+      <div class="slide dark-theme flex-col-center" style="text-align: center; justify-content: center; gap: 30px;">
+        <div style="font-size: 1.2rem; letter-spacing: 4px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase;">
+          KẾT THÚC
+        </div>
+        
+        <h1 style="font-size: 4rem; font-family: var(--font-heading); font-weight: 800; color: #ffffff;">
+          Have a nice day! 😊📈
+        </h1>
+        
+        <p style="font-size: 1.1rem; opacity: 0.7; max-width: 600px; line-height: 1.6; font-weight: 300;">
+          ⭐ ⭐ ⭐
+        </p>
+
+        <div>
+          <!-- Link to navigator PDF placed in the project root -->
+          <a href="bond_valuation_navigator.pdf" target="_blank" class="pdf-button">
+            <span>📂 Xem thêm slide trình bày khác: ( bond_valuation_navigator.pdf )</span>
+          </a>
+        </div>
+
+        <div style="font-size: 0.8rem; opacity: 0.4; font-family: var(--font-heading); margin-top: 20px;">
+          TVS-TVAM-Finsight &copy; 2026
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Presenter logic
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('slide-progress');
+    const indexList = document.getElementById('slide-index-list');
+
+    // Slides Names for Index Drawer
+    const slideNames = [
+      "Trang tiêu đề",
+      "Chương trình đào tạo",
+      "Module 1: Giới thiệu",
+      "Mệnh giá & Lãi danh nghĩa",
+      "Kỳ hạn & Tần suất trả lãi",
+      "Cơ chế bảo đảm tài sản",
+      "Ví dụ bóc tách dòng tiền",
+      "Module 2: Giới thiệu",
+      "Nguyên lý dòng tiền",
+      "Tỷ suất r & Phần bù rủi ro",
+      "Xếp hạng tín nhiệm",
+      "Ví dụ tìm tỷ suất chiết khấu",
+      "Module 3: Giới thiệu",
+      "Plain Vanilla Bond (Cố định)",
+      "Floating-Rate Bond (Thả nổi)",
+      "Zero-Coupon Bond",
+      "Clean Price vs. Dirty Price",
+      "Ví dụ lãi cộng dồn & Dirty Price",
+      "Ứng dụng hàm Excel",
+      "Module 4: Giới thiệu",
+      "Lợi suất hiện hành (CY)",
+      "Lợi suất đến hạn (YTM)",
+      "Lợi suất mua lại trước hạn",
+      "Rủi ro và Yield to Worst",
+      "Module 5: Giới thiệu",
+      "Ngân hàng vs Bất động sản",
+      "Bẫy Lợi suất & EBIT/Interest",
+      "Mối quan hệ ngược chiều",
+      "Bản đồ tư duy tương tác",
+      "Hình ảnh Sơ đồ tư duy",
+      "Hình ảnh Sổ tay hướng dẫn",
+      " Have a nice day!"
+    ];
+
+    function showSlide(index) {
+      if (index < 0 || index >= slides.length) return;
+      
+      // Update classes
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'prev');
+        if (i < index) {
+          slide.classList.add('prev');
+        }
+      });
+      
+      currentSlide = index;
+      slides[currentSlide].classList.add('active');
+
+      // Update progress bar
+      const progressPercent = ((currentSlide + 1) / slides.length) * 100;
+      progressBar.style.width = `${progressPercent}%`;
+
+      // Update active list item in drawer
+      const indexItems = document.querySelectorAll('.slide-index-item');
+      indexItems.forEach((item, i) => {
+        item.classList.remove('active');
+        if (i === currentSlide) {
+          item.classList.add('active');
+          // Scroll active item into view inside drawer
+          item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+      });
+    }
+
+    function nextSlide() {
+      if (currentSlide < slides.length - 1) {
+        showSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        showSlide(currentSlide - 1);
+      }
+    }
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      }
+    });
+
+    // Auto layout scaling to maintain 16:9
+    function resizeSlides() {
+      const container = document.getElementById('slides-container');
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      
+      // 96% of screen to leave a premium thin spacing border
+      const scale = Math.min(windowWidth / 1280, windowHeight / 720) * 0.96;
+      container.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      
+      // Center position
+      container.style.left = '50%';
+      container.style.top = '50%';
+      container.style.position = 'absolute';
+    }
+
+    window.addEventListener('resize', resizeSlides);
+    window.addEventListener('load', () => {
+      resizeSlides();
+      showSlide(0);
+      buildIndexDrawer();
+      initMindMapHover();
+    });
+
+    // Toggle Drawer Navigation
+    function toggleDrawer() {
+      const drawer = document.getElementById('drawer-overlay');
+      drawer.classList.toggle('active');
+    }
+
+    // Build Index Drawer elements dynamically
+    function buildIndexDrawer() {
+      indexList.innerHTML = '';
+      slideNames.forEach((name, i) => {
+        const item = document.createElement('button');
+        item.className = 'slide-index-item';
+        if (i === currentSlide) item.classList.add('active');
+        item.onclick = () => {
+          showSlide(i);
+          toggleDrawer();
+        };
+
+        const num = document.createElement('span');
+        num.className = 'slide-index-number';
+        num.textContent = String(i + 1).padStart(2, '0');
+
+        const titleText = document.createElement('span');
+        titleText.className = 'slide-index-name';
+        titleText.textContent = name;
+
+        item.appendChild(num);
+        item.appendChild(titleText);
+        indexList.appendChild(item);
+      });
+    }
+
+    // ==================== MIND MAP INTERACTION ====================
+    function initMindMapHover() {
+      const items = document.querySelectorAll('.mm-item');
+      const detailTitle = document.getElementById('mm-detail-title');
+      const detailDesc = document.getElementById('mm-detail-desc');
+      const detailBar = document.getElementById('mm-detail-bar');
+      
+      if (!detailBar || !detailTitle || !detailDesc) return;
+      
+      items.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+          const desc = item.getAttribute('data-desc');
+          const title = item.textContent;
+          detailTitle.textContent = title;
+          detailDesc.textContent = desc;
+          detailBar.style.background = 'rgba(197, 160, 89, 0.08)';
+          detailBar.style.borderLeftColor = 'var(--primary)';
+        });
+        
+        item.addEventListener('mouseleave', () => {
+          detailTitle.textContent = 'Bản đồ tư duy Định giá Trái phiếu';
+          detailDesc.textContent = 'Di chuột qua từng từ khóa trong sơ đồ để xem diễn giải chi tiết và định hướng thực hành nghiệp vụ.';
+          detailBar.style.background = 'rgba(20, 79, 146, 0.05)';
+          detailBar.style.borderLeftColor = 'var(--accent-gold)';
+        });
+      });
+    }
+  </script>
 </body>
 </html>
